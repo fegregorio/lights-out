@@ -30,6 +30,9 @@ public class TileBehaviour : MonoBehaviour
 
             tileScript.Switch();
         }
+
+        GameManager.movesCount++;
+        GameManager.GameOver();
     }
 
     void Switch()

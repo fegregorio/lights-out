@@ -3,17 +3,45 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] GameObject[] tiles;
+    [SerializeField] static GameObject[] tiles;
+    [SerializeField] static GameObject gameOverBlock;
     [SerializeField] Button newGameButton;
+    [SerializeField] TextMeshProUGUI movesCountText;
+
+    public static int movesCount;
     
     void Start()
     {
         newGameButton.onClick.AddListener(RandomGen);
+        gameOverBlock = GameObject.Find("Block");
         GetAllTiles();
         RandomGen();
+    }
+
+    void Update()
+    {
+        movesCountText.text = ("Moves: " + movesCount);
+    }
+
+    public static void GameOver()
+    {
+        bool[] tileStates = new bool[tiles.Length];
+
+        for (int i = 0; i < tiles.Length; i++)
+        {
+            TileBehaviour tileScript = tiles[i].GetComponent<TileBehaviour>();
+
+            tileStates[i] = tileScript.on;
+        }
+
+        if (!tileStates.Contains(true) || !tileStates.Contains(false))
+        {
+            gameOverBlock.SetActive(true);
+        }
     }
 
     void GetAllTiles()
@@ -31,6 +59,9 @@ public class GameManager : MonoBehaviour
 
             tileScript.on = boolValues[i];
         }
+
+        movesCount = 0;
+        gameOverBlock.SetActive(false);
     }
 
     bool[] RandomBoolList()
